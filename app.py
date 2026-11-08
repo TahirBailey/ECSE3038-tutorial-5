@@ -28,3 +28,8 @@ class Device(BaseModel):
 
 
 # Your handlers go below this line.
+
+@app.get("/devices")
+def get_devices():
+    all_devices = list(devices.find({}, {"_id": 0}))
+    return all_devices
