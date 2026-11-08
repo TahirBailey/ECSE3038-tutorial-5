@@ -60,3 +60,21 @@ def create_device(device: Device):
 
     # Return the newly created device
     return new_device
+
+@app.put("/devices/{name}")
+def update_device(name: str, device: Device):
+
+    # Check whether the device exists
+    existing_device = devices.find_one({"name": name})
+
+    if existing_device is None:
+        raise HTTPException(status_code=404, detail="Device not found")
+
+    # Use the URL name as the device name
+    updated_device = device.model_dump()
+    updated_device["name"] = name
+
+    # Replace the existing device with the new information
+    devices.replace_one({"name": name}, updated_device)
+
+    return updated_device
