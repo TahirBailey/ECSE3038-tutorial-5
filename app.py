@@ -78,3 +78,17 @@ def update_device(name: str, device: Device):
     devices.replace_one({"name": name}, updated_device)
 
     return updated_device
+
+@app.delete("/devices/{name}")
+def delete_device(name: str):
+
+    # Check if the device exists
+    existing_device = devices.find_one({"name": name})
+
+    if existing_device is None:
+        raise HTTPException(status_code=404, detail="Device not found")
+
+    # Delete the device from MongoDB
+    devices.delete_one({"name": name})
+
+    return {"message": "Device deleted successfully"}
