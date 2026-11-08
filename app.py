@@ -42,3 +42,21 @@ def get_device(name: str):
         raise HTTPException(status_code=404, detail="Device not found")
 
     return device
+
+@app.post("/devices", status_code=201)
+def create_device(device: Device):
+
+    # Check if a device with this name already exists
+    existing_device = devices.find_one({"name": device.name})
+
+    if existing_device is not None:
+        raise HTTPException(status_code=409, detail="Device already exists")
+
+    # Convert the device information into a dictionary
+    new_device = device.model_dump()
+
+    # Insert the device into MongoDB
+    devices.insert_one(new_device)
+
+    # Return the newly created device
+    return new_device
